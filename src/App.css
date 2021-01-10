@@ -1,0 +1,27 @@
+* {
+  margin: 0;
+  padding: 0;
+  /* box-sizing: border-box; */
+}
+body {
+  background-color: #5d70bd;
+}
+ul {
+  list-style: none;
+}
+.App {
+  margin: auto;
+  max-width: 500px;
+}
+
+.listTask input:focus,
+.listTask input:active {
+  outline: none;
+}
+.totalComplete {
+  padding: 10px 30px;
+  color: white;
+}
+.quantity {
+  margin-left: 10px;
+}

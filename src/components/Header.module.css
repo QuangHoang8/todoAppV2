@@ -11,8 +11,13 @@
 }
 .heading input {
   width: 82%;
-  margin-bottom: 50px;
+  margin-bottom: 30px;
 }
 .heading h1 {
   padding: 15px 30px;
+  color: white;
+}
+.guide {
+  padding: 10px 30px;
+  color: white;
 }

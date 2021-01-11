@@ -18,10 +18,10 @@ const UNCOMPLETETASKS = [
   { content: "Mua bỉm", color: "gray", time: 179215812 },
 ];
 const COMPLETETASKS = [
-  { time: 90, content: "Học Java", color: "gray" },
-  { time: 10, content: "Học lái xe ô tô", color: "gray" },
-  { time: 80, content: "Mua sữa", color: "gray" },
-  { time: 12, content: "Mua nồi cơm điện", color: "gray" },
+  { content: "Học Java", color: "gray", time: 90 },
+  { content: "Học lái xe ô tô", color: "gray", time: 10 },
+  { content: "Mua sữa", color: "gray", time: 80 },
+  { content: "Mua nồi cơm điện", color: "gray", time: 12 },
 ];
 function App() {
   const [unCompleteTasks, setUnCompleteTasks] = useState(UNCOMPLETETASKS);
@@ -88,6 +88,11 @@ function App() {
       />
     ));
 
+  // Đếm số lượng task chưa hoàn thành
+  const notCmpletedTaskQuantity = () => {
+    return notCompletedTaskItems.length;
+  };
+
   // Render ra task đã hoàn thành
   const completedTaskItems = completeTasks
     .sort((a, b) => {
@@ -105,14 +110,15 @@ function App() {
       );
     });
 
-  const quantity = () => {
+  // Đếm số lượng task hoàn thành
+  const completedTaskQuantity = () => {
     return completeTasks.length;
   };
 
   // Thêm task mới
 
   const handleAddTask = (key, job) => {
-    if (key === "Enter") {
+    if (key === "Enter" && job !== "") {
       const newTask = [
         ...unCompleteTasks,
         ...[{ id: 5, content: job, color: "gray", time: new Date().getTime() }],
@@ -121,13 +127,13 @@ function App() {
     }
   };
 
-  // // render Header
-  // const header = <Header addTask={handleAddTask} content={resetInput} />;
-  // Làm ô add task trở thành rỗng sau khi nhập xong
-
   return (
     <div className="App">
       <Header addTask={handleAddTask} />
+      <div className="totalComplete">
+        <span>Not Completed</span>
+        <span className="quantity">{notCmpletedTaskQuantity()}</span>
+      </div>
       <section className="listTask">
         <ul>{notCompletedTaskItems}</ul>
       </section>
@@ -135,7 +141,7 @@ function App() {
         <section className="">
           <div className="totalComplete">
             <span> Completed</span>
-            <span className="quantity">{quantity()}</span>
+            <span className="quantity">{completedTaskQuantity()}</span>
           </div>
           <ul>{completedTaskItems}</ul>
         </section>

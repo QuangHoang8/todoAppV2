@@ -1,16 +1,18 @@
 import { useState } from "react";
 import classes from "./Header.module.css";
 
-function Header({ addTask }) {
+function Header({ newTask }) {
   const [jobContent, setJobContent] = useState("");
   const handleInputValue = (content) => {
     setJobContent(content);
   };
-  const handleResetInput = (key) => {
-    if (key === "Enter") {
+  const handleAddTask = (key, content) => {
+    if (key === "Enter" && content !== "") {
+      newTask(content);
       setJobContent("");
     }
   };
+
   return (
     <header className={classes.heading}>
       <h1>Tasks</h1>
@@ -21,9 +23,8 @@ function Header({ addTask }) {
         type="text"
         value={jobContent}
         placeholder="Add a task"
-        onKeyDown={(event) => addTask(event.key, event.target.value)}
+        onKeyDown={(event) => handleAddTask(event.key, event.target.value)}
         onChange={(event) => handleInputValue(event.target.value)}
-        onKeyUp={(e) => handleResetInput(e.key)}
       />
     </header>
   );

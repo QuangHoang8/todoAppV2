@@ -4,7 +4,7 @@ import classes from "./CompleteTask.module.css";
 function CompleteTask({
   completeTaskContent,
   value,
-  colorStar,
+  favourite,
   onMoveCompletedTask,
 }) {
   return (
@@ -21,7 +21,7 @@ function CompleteTask({
           <label className={classes.wrapItemLabel}>{completeTaskContent}</label>
         </div>
         <div>
-          <StarFilled style={{ color: colorStar }} />
+          <StarFilled style={{ color: favourite ? "yellow" : "gray" }} />
         </div>
       </div>
     </li>

@@ -1,11 +1,10 @@
-import React from "react";
 import { StarFilled } from "@ant-design/icons";
 import classes from "./TaskList.module.css";
 function TaskList({
   value,
   taskContent,
   onCheckCompleteTask,
-  colorStar,
+  favourite,
   onAddTaskFavorite,
 }) {
   return (
@@ -21,7 +20,7 @@ function TaskList({
           <label className={classes.wrapItemLabel}>{taskContent}</label>
         </div>
         <StarFilled
-          style={{ color: colorStar, outline: "none" }}
+          style={{ color: favourite ? "yellow" : "gray", outline: "none" }}
           onClick={() => onAddTaskFavorite(value)}
         />
       </div>

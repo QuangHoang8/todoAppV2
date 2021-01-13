@@ -3,112 +3,93 @@ import CompleteTask from "./components/CompleteTask";
 import Header from "./components/Header";
 import TaskList from "./components/TaskList";
 import { useState } from "react";
+import {
+  sortTaskFavourite,
+  deleteTaskComplete,
+  choseTaskUnComplete,
+} from "./components/UncompletedList";
+import {
+  choseTaskComplete,
+  deleteTaskUnCompleted,
+} from "./components/CompletedList";
+// import { unCompleteList } from "./components/UncompleteList";
+
 const UNCOMPLETETASKS = [
   {
     content: "Làm bài về nhà todoApp",
-    color: "gray",
+    favourite: false,
     time: 17338812,
   },
   {
     content: "Tìm hiểu về usememo",
-    color: "gray",
+    favourite: false,
     time: 17928812,
   },
-  { content: "Học ReactJS", color: "gray", time: 179088812 },
-  { content: "Mua bỉm", color: "gray", time: 179215812 },
+  { content: "Học ReactJS", favourite: false, time: 179088812 },
+  { content: "Mua bỉm", favourite: false, time: 179215812 },
 ];
 const COMPLETETASKS = [
-  { content: "Học Java", color: "gray", time: 90 },
-  { content: "Học lái xe ô tô", color: "gray", time: 10 },
-  { content: "Mua sữa", color: "gray", time: 80 },
-  { content: "Mua nồi cơm điện", color: "gray", time: 12 },
+  { content: "Học Java", favourite: false, time: 90 },
+  { content: "Học lái xe ô tô", favourite: false, time: 10 },
+  { content: "Mua sữa", favourite: false, time: 80 },
+  { content: "Mua nồi cơm điện", favourite: false, time: 12 },
 ];
 function App() {
-  const [unCompleteTasks, setUnCompleteTasks] = useState(UNCOMPLETETASKS);
   const [completeTasks, setCompleteTasks] = useState(COMPLETETASKS);
+  const [unCompleteTasks, setUnCompleteTasks] = useState(UNCOMPLETETASKS);
 
-  const handleCompleteTask = (identify) => {
-    // Render những công việc không được check
-    const newTask = unCompleteTasks.filter((task) => task.time !== identify);
-    setUnCompleteTasks(newTask);
-
+  const handleCompleteTask = (value) => {
     // Chuyển những công việc được check xuống phần hoàn thành
-    const newCompleteTask = unCompleteTasks.filter(
-      (task) => task.time === identify
-    );
-    newCompleteTask.time = new Date().getTime();
-    setCompleteTasks([...completeTasks, ...newCompleteTask]);
+    setCompleteTasks(choseTaskComplete(unCompleteTasks, value, completeTasks));
+
+    // Render lại những công việc không được check
+    setUnCompleteTasks(deleteTaskComplete(unCompleteTasks, value));
   };
 
   // Đánh dấu những task yêu thích
   const handleAddTaskFavorite = (value) => {
-    const newTasks = unCompleteTasks.map((task) => {
-      if (task.time !== value) {
-        return task;
-      }
-      if (task.color === "gray") {
-        const newTask = {
-          ...task,
-          color: "yellow",
-          time: new Date().getTime(),
-        };
-        return newTask;
-      } else {
-        const newTask = { ...task, color: "gray" };
-        return newTask;
-      }
-    });
-    setUnCompleteTasks(newTasks);
-  };
-
-  // Bỏ check những job đã hoàn thành
-  const handleMoveCompletedTask = (value) => {
-    // Render lại task đã được check
-    const newCompleteTask = completeTasks.filter((task) => task.time !== value);
-    setCompleteTasks(newCompleteTask);
-
-    // Chuyển task bỏ check nên mục chưa hoàn thành
-    const newTask = completeTasks.filter((task) => task.time === value);
-    setUnCompleteTasks([...unCompleteTasks, ...newTask]);
+    setUnCompleteTasks(sortTaskFavourite(unCompleteTasks, value));
   };
 
   // Render ra task chưa hoàn thành
-  const notCompletedTaskItems = unCompleteTasks
-    .sort((a, b) => {
-      return b.time - a.time;
-    })
-    .map((task) => (
-      <TaskList
-        key={task.time}
-        value={task.time}
-        taskContent={task.content}
-        colorStar={task.color}
-        onCheckCompleteTask={handleCompleteTask}
-        onAddTaskFavorite={handleAddTaskFavorite}
-      />
-    ));
+  const notCompletedTaskItems = unCompleteTasks.map((task) => (
+    <TaskList
+      key={task.time}
+      value={task.time}
+      taskContent={task.content}
+      favourite={task.favourite}
+      onCheckCompleteTask={handleCompleteTask}
+      onAddTaskFavorite={handleAddTaskFavorite}
+    />
+  ));
 
   // Đếm số lượng task chưa hoàn thành
-  const notCmpletedTaskQuantity = () => {
+  const notCompletedTaskQuantity = () => {
     return notCompletedTaskItems.length;
   };
 
+  const handleMoveCompletedTask = (value) => {
+    // Render lại task vẫn được check
+    setCompleteTasks(deleteTaskUnCompleted(completeTasks, value));
+
+    // Chuyển task bỏ check lên mục chưa hoàn thành
+    setUnCompleteTasks(
+      choseTaskUnComplete(completeTasks, value, unCompleteTasks)
+    );
+  };
+
   // Render ra task đã hoàn thành
-  const completedTaskItems = completeTasks
-    .sort((a, b) => {
-      return b.time - a.time;
-    })
-    .map((task) => {
-      return (
-        <CompleteTask
-          key={task.time}
-          value={task.time}
-          completeTaskContent={task.content}
-          colorStar={task.color}
-          onMoveCompletedTask={handleMoveCompletedTask}
-        />
-      );
-    });
+  const completedTaskItems = completeTasks.map((task) => {
+    return (
+      <CompleteTask
+        key={task.time}
+        value={task.time}
+        completeTaskContent={task.content}
+        favourite={task.favourite}
+        onMoveCompletedTask={handleMoveCompletedTask}
+      />
+    );
+  });
 
   // Đếm số lượng task hoàn thành
   const completedTaskQuantity = () => {
@@ -117,22 +98,24 @@ function App() {
 
   // Thêm task mới
 
-  const handleAddTask = (key, job) => {
-    if (key === "Enter" && job !== "") {
-      const newTask = [
-        ...unCompleteTasks,
-        ...[{ id: 5, content: job, color: "gray", time: new Date().getTime() }],
-      ];
-      setUnCompleteTasks(newTask);
-    }
+  const addTask = (taskContent) => {
+    const task = [
+      ...unCompleteTasks,
+      ...[
+        { content: taskContent, favourite: false, time: new Date().getTime() },
+      ],
+    ].sort((task1, task2) => {
+      return task2.time - task1.time;
+    });
+    setUnCompleteTasks(task);
   };
 
   return (
     <div className="App">
-      <Header addTask={handleAddTask} />
+      <Header newTask={addTask} />
       <div className="totalComplete">
         <span>Not Completed</span>
-        <span className="quantity">{notCmpletedTaskQuantity()}</span>
+        <span className="quantity">{notCompletedTaskQuantity()}</span>
       </div>
       <section className="listTask">
         <ul>{notCompletedTaskItems}</ul>

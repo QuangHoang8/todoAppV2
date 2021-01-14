@@ -16,27 +16,28 @@ import {
 
 const UNCOMPLETETASKS = [
   {
+    id: 1,
     content: "Làm bài về nhà todoApp",
     favourite: false,
     time: 17338812,
   },
-  {
-    content: "Tìm hiểu về usememo",
-    favourite: false,
-    time: 17928812,
-  },
-  { content: "Học ReactJS", favourite: false, time: 179088812 },
-  { content: "Mua bỉm", favourite: false, time: 179215812 },
+  { id: 2, content: "Tìm hiểu về usememo", favourite: false, time: 17928812 },
+  { id: 3, content: "Học ReactJS", favourite: false, time: 179088812 },
+  { id: 4, content: "Mua bỉm", favourite: false, time: 179215812 },
 ];
 const COMPLETETASKS = [
-  { content: "Học Java", favourite: false, time: 90 },
-  { content: "Học lái xe ô tô", favourite: false, time: 10 },
-  { content: "Mua sữa", favourite: false, time: 80 },
-  { content: "Mua nồi cơm điện", favourite: false, time: 12 },
+  { id: 5, content: "Học Java", favourite: false, time: 90 },
+  { id: 6, content: "Học lái xe ô tô", favourite: false, time: 10 },
+  { id: 7, content: "Mua sữa", favourite: false, time: 80 },
+  { id: 8, content: "Mua nồi cơm điện", favourite: false, time: 12 },
 ];
 function App() {
   const [completeTasks, setCompleteTasks] = useState(COMPLETETASKS);
   const [unCompleteTasks, setUnCompleteTasks] = useState(UNCOMPLETETASKS);
+  const maxId = () =>
+    [...unCompleteTasks, ...completeTasks].reduce((task1, task2) =>
+      task1.id > task2.id ? task1 : task2
+    ).id + 1;
 
   const handleCompleteTask = (value) => {
     // Chuyển những công việc được check xuống phần hoàn thành
@@ -54,8 +55,8 @@ function App() {
   // Render ra task chưa hoàn thành
   const notCompletedTaskItems = unCompleteTasks.map((task) => (
     <TaskList
-      key={task.time}
-      value={task.time}
+      key={task.id}
+      value={task.id}
       taskContent={task.content}
       favourite={task.favourite}
       onCheckCompleteTask={handleCompleteTask}
@@ -82,8 +83,8 @@ function App() {
   const completedTaskItems = completeTasks.map((task) => {
     return (
       <CompleteTask
-        key={task.time}
-        value={task.time}
+        key={task.id}
+        value={task.id}
         completeTaskContent={task.content}
         favourite={task.favourite}
         onMoveCompletedTask={handleMoveCompletedTask}
@@ -102,7 +103,12 @@ function App() {
     const task = [
       ...unCompleteTasks,
       ...[
-        { content: taskContent, favourite: false, time: new Date().getTime() },
+        {
+          id: maxId(),
+          content: taskContent,
+          favourite: false,
+          time: new Date().getTime(),
+        },
       ],
     ].sort((task1, task2) => {
       return task2.time - task1.time;

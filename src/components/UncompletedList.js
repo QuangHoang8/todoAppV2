@@ -1,7 +1,7 @@
 // Tô màu vàng cho dấu sao của task favourite
 const addTaskFavorite = (unCompleteTasks, value) => {
   const newTasks = unCompleteTasks.map((task) => {
-    if (task.time !== value) {
+    if (task.id !== value) {
       return task;
     }
     if (task.favourite === false) {
@@ -40,12 +40,19 @@ export const sortTaskFavourite = (unCompleteTasks, value) => {
 
 export const deleteTaskComplete = (unCompleteTasks, value) => {
   // Render những công việc không được check
-  const newTask = unCompleteTasks.filter((task) => task.time !== value);
+  const newTask = unCompleteTasks.filter((task) => task.id !== value);
   return newTask;
 };
 
 export const choseTaskUnComplete = (completeTasks, value, unCompleteTasks) => {
   // Chuyển task bỏ check nên mục chưa hoàn thành
-  const newTask = completeTasks.filter((task) => task.time === value);
-  return [...unCompleteTasks, ...newTask];
+  const newTask = completeTasks.filter((task) => task.id === value);
+  newTask[0].time =
+    unCompleteTasks.reduce((task1, task2) =>
+      task1.time < task2.time ? task1 : task2
+    ).time - 1;
+  newTask[0].favourite = false;
+  return [...newTask, ...unCompleteTasks].sort((task1, task2) => {
+    return task2.time - task1.time;
+  });
 };
